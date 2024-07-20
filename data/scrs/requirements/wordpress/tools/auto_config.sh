@@ -1,12 +1,16 @@
 #!/bin/bash
 
-# Démarrer PHP-FPM
-service php7.3-fpm start
+# Créer le répertoire pour le PID de PHP-FPM et définir les permissions
+mkdir -p /run/php
+chown www-data:www-data /run/php
+
+# Assurez-vous que PHP-FPM est arrêté avant de le démarrer en mode non daemonisé
+service php7.3-fpm stop
 
 # Attendre que MariaDB soit prêt
 until mysqladmin ping -h mariadb --silent; do
     echo "Waiting for MariaDB to be ready..."
-    sleep 2
+    sleep 5
 done
 
 # Télécharger WP-CLI si nécessaire
@@ -33,5 +37,6 @@ else
     echo "=== WordPress is already installed ==="
 fi
 
-# Garder le conteneur en cours d'exécution
-tail -f /dev/null
+# Démarrer PHP-FPM en mode non daemonisé
+php-fpm7.3 -F
+

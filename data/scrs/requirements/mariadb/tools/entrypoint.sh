@@ -1,24 +1,10 @@
 #!/bin/bash
 
-# Créer un fichier SQL pour initialiser la base de données
-cat << EOF > /docker-entrypoint-initdb.d/init_db.sql
-CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};
-CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
-GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%';
-FLUSH PRIVILEGES;
-EOF
-
+# Démarrer le service MariaDB
 service mysql start
-
-# Vérifier si le socket existe
-if [ ! -S /var/run/mysqld/mysqld.sock ]; then
-    echo "Le fichier de socket MySQL n'existe pas. Création du socket..."
-    mkdir -p /var/run/mysqld
-    chown mysql:mysql /var/run/mysqld
-    service mysql restart
-fi
-
-# Exécuter le script SQL
+# Remplacer les variables dans le fichier SQL
+envsubst < /docker-entrypoint-initdb.d/init_db_template.sql > /docker-entrypoint-initdb.d/init_db.sql
+# Exécuter le script SQL d'initialisation
 mysql -u root -p"${MYSQL_ROOT_PASSWORD}" < /docker-entrypoint-initdb.d/init_db.sql
 if [ $? -ne 0 ]; then
     echo "Échec de l'exécution du script SQL"
@@ -27,6 +13,12 @@ fi
 
 echo "=== Script SQL exécuté avec succès ==="
 
-# Garder le conteneur en cours d'exécution
-chown -R mysql:mysql /var/lib/mysql
-tail -f /dev/null
+# Fonction de surveillance pour garder le conteneur en cours d'exécution
+while true; do
+    sleep 60
+    if ! pgrep mysqld > /dev/null; then
+        echo "Le service MySQL s'est arrêté, redémarrage..."
+        service mysql restart
+    fi
+done
+

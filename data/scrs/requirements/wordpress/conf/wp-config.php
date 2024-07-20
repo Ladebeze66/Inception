@@ -1,8 +1,9 @@
 <?php
-define('DB_NAME', 'wordpress');
-define('DB_USER', 'fgras');
-define('DB_PASSWORD', '1234');
+define('DB_NAME', getenv('MYSQL_DATABASE'));
+define('DB_USER', getenv('MYSQL_USER'));
+define('DB_PASSWORD', getenv('MYSQL_PASSWORD'));
 define('DB_HOST', 'mariadb');
+define('DB_CHARSET', 'utf8');
 define('URL', getenv('DOMAIN_NAME'));
 define('TITLE', getenv('WP_TITLE'));
 define('ADMIN_USER', getenv('WP_ADMIN_USR'));

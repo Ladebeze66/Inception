@@ -9,7 +9,7 @@ RUN apt update -y && apt upgrade -y && \
     rm /tmp/wordpress.tar.gz && \
     wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && chmod +x wp-cli.phar && mv wp-cli.phar /usr/local/bin/wp
 
-RUN apt-get install sendmail -y
+#RUN apt-get install sendmail -y
 
 # Copier les fichiers de configuration PHP et le script d'auto-configuration
 COPY ./conf/www.conf /etc/php/7.3/fpm/pool.d/

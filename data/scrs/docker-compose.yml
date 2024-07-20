@@ -52,11 +52,11 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /home/fgras-ca/Inception/data/mysql
+      device: /home/${USER}/data/mysql
       o: bind
   wordpress_data:
     driver: local
     driver_opts:
       type: none
-      device: /home/fgras-ca/Inception/data/html
+      device: /home/${USER}/data/html
       o: bind

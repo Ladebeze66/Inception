@@ -1,10 +1,11 @@
 SHELL := /bin/bash
 
 # Variables
+USER = $(shell whoami)
 HOSTNAME=fgras-ca.42.fr
 HOSTS_FILE=/etc/hosts
-VOLUME_DIR_MYSQL=/home/fgras-ca/Inception/data/mysql
-VOLUME_DIR_HTML=/home/fgras-ca/Inception/data/html
+VOLUME_DIR_MYSQL = /home/$(USER)/data/mysql
+VOLUME_DIR_HTML = /home/$(USER)/data/html
 
 all: sudo-validate setup-hosts create-volumes start-docker
 
@@ -14,7 +15,7 @@ sudo-validate:
 
 down:
 	@echo "Stopping and removing all Docker containers..."
-	@docker-compose -f /home/fgras-ca/Inception/data/scrs/docker-compose.yml down
+	@docker-compose -f /home/$(USER)/data/scrs/docker-compose.yml down
 
 re: down all
 
@@ -53,7 +54,7 @@ create-volumes:
 
 start-docker:
 	@echo "Starting Docker Compose in detached mode..."
-	@docker-compose -f /home/fgras-ca/Inception/data/scrs/docker-compose.yml up -d --build
+	@docker-compose -f /home/$(USER)/data/scrs/docker-compose.yml up --build
 
 .PHONY: all re down clean setup-hosts create-volumes start-docker sudo-validate
 
