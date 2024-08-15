@@ -6,6 +6,8 @@ HOSTNAME=fgras-ca.42.fr
 HOSTS_FILE=/etc/hosts
 VOLUME_DIR_MYSQL = /home/$(USER)/data/mysql
 VOLUME_DIR_HTML = /home/$(USER)/data/html
+VOLUMES_DIR = /home/$(USER)/data
+DOCKER_COMPOSE_FILE = ./srcs/docker-compose.yml
 
 all: sudo-validate setup-hosts create-volumes start-docker
 
@@ -15,7 +17,7 @@ sudo-validate:
 
 down:
 	@echo "Stopping and removing all Docker containers..."
-	@docker-compose -f /home/$(USER)/data/scrs/docker-compose.yml down
+	@docker-compose -f $(DOCKER_COMPOSE_FILE) down
 
 re: down all
 
@@ -38,9 +40,7 @@ clean: down
 
 	@docker system prune -a --force --volumes
 	@echo "Removing MySQL and HTML data directories..."
-	@sudo chmod -R 777 $(VOLUME_DIR_MYSQL)
-	@sudo chmod -R 777 $(VOLUME_DIR_HTML)
-	@sudo rm -rf $(VOLUME_DIR_MYSQL) $(VOLUME_DIR_HTML)
+	@sudo rm -rf $(VOLUMES_DIR)
 
 setup-hosts:
 	@echo "Configuring /etc/hosts..."
@@ -54,10 +54,6 @@ create-volumes:
 
 start-docker:
 	@echo "Starting Docker Compose in detached mode..."
-	@docker-compose -f /home/$(USER)/data/scrs/docker-compose.yml up --build
+	@docker-compose -f $(DOCKER_COMPOSE_FILE) up -d --build
 
 .PHONY: all re down clean setup-hosts create-volumes start-docker sudo-validate
-
-
-
-

@@ -4,15 +4,6 @@
 mkdir -p /run/php
 chown www-data:www-data /run/php
 
-# Assurez-vous que PHP-FPM est arrêté avant de le démarrer en mode non daemonisé
-service php7.3-fpm stop
-
-# Attendre que MariaDB soit prêt
-until mysqladmin ping -h mariadb --silent; do
-    echo "Waiting for MariaDB to be ready..."
-    sleep 5
-done
-
 # Télécharger WP-CLI si nécessaire
 if [ ! -f /usr/local/bin/wp ]; then
     wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
@@ -37,6 +28,4 @@ else
     echo "=== WordPress is already installed ==="
 fi
 
-# Démarrer PHP-FPM en mode non daemonisé
-php-fpm7.3 -F
-
+exec "$@"

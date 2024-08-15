@@ -1,8 +1,8 @@
-FROM debian:buster
+FROM debian:bullseye
 
 # Installer les paquets nécessaires
 RUN apt update -y && apt upgrade -y && \
-    apt-get install -y php7.3-fpm php7.3-mysql mariadb-client wget curl vim && \
+    apt-get install -y php7.4-fpm php7.4-mysql mariadb-client wget curl vim && \
     mkdir -p /var/www/html && \
     wget https://fr.wordpress.org/wordpress-6.0-fr_FR.tar.gz -O /tmp/wordpress.tar.gz && \
     tar -xzvf /tmp/wordpress.tar.gz -C /var/www/html --strip-components=1 && \
@@ -12,7 +12,7 @@ RUN apt update -y && apt upgrade -y && \
 #RUN apt-get install sendmail -y
 
 # Copier les fichiers de configuration PHP et le script d'auto-configuration
-COPY ./conf/www.conf /etc/php/7.3/fpm/pool.d/
+COPY ./conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
 COPY ./conf/wp-config.php /var/www/html/
 COPY ./tools/auto_config.sh /usr/local/bin/
 
@@ -25,6 +25,8 @@ RUN chmod -R 777 /var/www/html
 COPY ./conf/web /var/www/html
 RUN chmod -R 777 /var/www/html
 
+ENTRYPOINT ["/usr/local/bin/auto_config.sh"]
+
 EXPOSE 9000
 
-ENTRYPOINT ["/usr/local/bin/auto_config.sh"]
+CMD ["php-fpm7.4", "-F"]
