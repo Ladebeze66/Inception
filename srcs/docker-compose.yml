@@ -32,7 +32,7 @@ services:
       - inception
     volumes:
       - wordpress_data:/var/www/html
-    restart: always
+    restart: on-failure
 
   nginx:
     container_name: nginx

@@ -54,6 +54,6 @@ create-volumes:
 
 start-docker:
 	@echo "Starting Docker Compose in detached mode..."
-	@docker-compose -f $(DOCKER_COMPOSE_FILE) up -d --build
+	@docker-compose -f $(DOCKER_COMPOSE_FILE) up --build
 
 .PHONY: all re down clean setup-hosts create-volumes start-docker sudo-validate

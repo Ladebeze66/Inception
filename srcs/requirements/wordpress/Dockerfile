@@ -13,7 +13,7 @@ RUN apt update -y && apt upgrade -y && \
 
 # Copier les fichiers de configuration PHP et le script d'auto-configuration
 COPY ./conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
-COPY ./conf/wp-config.php /var/www/html/
+COPY ./conf/wp-config.php /var/www/html/wp-config.php
 COPY ./tools/auto_config.sh /usr/local/bin/
 
 # Assurer les bonnes permissions pour les fichiers
@@ -22,8 +22,7 @@ RUN chmod +x /usr/local/bin/auto_config.sh && \
     chown -R www-data:www-data /var/www/html ; \
     chown www-data:www-data /var/www/html/index.php
 RUN chmod -R 777 /var/www/html
-COPY ./conf/web /var/www/html
-RUN chmod -R 777 /var/www/html
+
 
 ENTRYPOINT ["/usr/local/bin/auto_config.sh"]
 
